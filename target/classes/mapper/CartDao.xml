@@ -1,0 +1,22 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hs.dao.CartDao">
+    <select id="getAll" resultType="com.hs.entity.Cart">
+        select * from cart where cid=#{cid} ;
+    </select>
+
+    <insert id="saveCart">
+        insert into cart values(#{cid},#{gid},#{gname},#{gimg},#{gprice},#{gcount},#{subtotal});
+    </insert>
+
+    <update id="CartCountAddOne">
+        update cart set gcount=gcount+1 where gid=#{gid} and cid=#{cid}
+    </update>
+    <select id="findByGid" resultType="com.hs.entity.Cart">
+        select * from cart where gid=#{gid} and cid=#{cid}
+    </select>
+
+    <delete id="del">
+        delete from cart where cid=#{cid} and gid=#{gid}
+    </delete>
+</mapper>

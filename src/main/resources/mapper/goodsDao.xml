@@ -1,0 +1,86 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hs.dao.GoodsDao">
+
+    <select id="getGoods" resultType="com.hs.entity.Goods">
+        select g.*,gt.name from goods g join goods_type gt on g.typeid=gt.id
+        <where>
+            <if test="searchStartTime!=null and searchStartTime!=''">
+                  g.createtime> #{searchStartTime}
+            </if>
+            <if test="searchEndTime!=''">
+                and #{searchEndTime}>g.createtime
+            </if>
+            <if test="searchName!=''">
+                and (g.goodname like '%${searchName}%' or g.id=#{searchName})
+            </if>
+            <if test="searchStatus!=-1">
+                and g.state=#{searchStatus}
+            </if>
+        </where>
+        order by g.createtime desc , g.id desc
+    </select>
+
+
+    <select id="getAllGood" resultType="com.hs.entity.Goods">
+        select * from goods where state=1 ORDER BY createtime desc ,id desc limit 0,5
+    </select>
+
+    <resultMap id="goods" type="com.hs.entity.Goods" autoMapping="true">
+        <id property="id" column="id"></id>
+       <association property="goodsConfigure" column="id" select="com.hs.dao.GoodsDao.getConfigure"></association>
+    </resultMap>
+    <select id="getAllGoodById" resultMap="goods">
+        select * from goods where id=#{id}
+    </select>
+
+    <select id="getConfigure"  resultType="com.hs.entity.GoodsConfigure">
+        select info from  goods_configure where id =#{id}
+    </select>
+
+    <select id="queryGoods" resultMap="goods">
+        select * from goods where state =1
+
+            <if test="goodname !=null">
+                and goodname like '%${goodname}%' or typeid=#{goodname}
+            </if>
+
+    </select>
+
+    <insert id="save">
+        insert into goods (goodname,price,stock,typeid
+        <if test="image!=null and image!='' ">
+            ,image
+        </if>
+        ,createtime,state) values (#{goodname},#{price},#{stock},#{typeid}
+        <if test="image!=null and image!=''">
+            ,#{image}
+        </if>
+        ,#{createtime},#{state})
+    </insert>
+
+    <insert id="update">
+        update goods set goodname=#{goodname},price=#{price},stock=#{stock},typeid=#{typeid}
+        <if test="image!=null and image!='' ">
+            ,image=#{image}
+        </if>
+        ,createtime=#{createtime},state=#{state} where id=#{id}
+    </insert>
+
+    <select id="gettype" resultType="com.hs.entity.GoodType">
+        select * from goods_type;
+    </select>
+
+    <update id="del">
+        update goods set state=#{state} where  id=#{id}
+    </update>
+
+    <update id="updateStock">
+        update goods set stock=stock-${stock}  where id=#{id}
+    </update>
+
+    <select id="panStock" resultType="java.util.Map">
+        select * from goods where stock >=#{stock} and id =#{id}
+    </select>
+
+</mapper>

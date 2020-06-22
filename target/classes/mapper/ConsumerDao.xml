@@ -1,0 +1,19 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hs.dao.ConsumerDao">
+    <select id="getByUser" resultType="com.hs.entity.Consumer">
+        select * from consumer where username=#{username} and password=#{password}
+    </select>
+
+    <insert id="save" >
+        insert  into consumer (username,password,phone) values (#{username},#{password},#{phone});
+    </insert>
+
+    <select id="getByUsername" resultType="java.lang.Integer">
+        select count(*) from consumer where username=#{username};
+    </select>
+
+    <update id="update">
+        update consumer set phone=#{phone} , email=#{email}, qianming=#{qianming},idcard=#{idcard},birthday=#{birthday},name =#{name} ,sex=#{sex}  where  id= #{id};
+    </update>
+</mapper>

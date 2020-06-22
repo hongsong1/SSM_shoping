@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+        <meta name="author" content="order by dede58.com"/>
+		<title>建材管理系统</title>
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<style>
+			#div_fr:hover{
+				color:red;
+			}
+		</style>
+		<style>
+			*{
+				padding: 0;
+				margin: 0;
+			}
+			.container{
+				max-width: 1000px;
+				margin: 0 auto;
+			}
+			.slide{
+				width: 100%;
+				min-height: 180px;
+				overflow: hidden;
+				position: relative;
+
+			}
+			.slide .img{
+				overflow: hidden;
+				position: absolute;
+				transition: width 0.4s,height 0.4s,top 0.4s,left 0.4s,z-index 0.4s;
+			}
+			.slide .img img{
+				width: calc(100% - 14px);
+				height: calc(100% - 14px);
+				margin: 7px;
+			}
+			.slide .img1{
+				width: 40%;
+				height: 40%;
+				top: 30%;
+				left: -50%;
+				z-index: 1;
+			}
+			.slide .img2{
+				width: 60%;
+				height: 60%;
+				top: 20%;
+				left: -20%;
+				z-index: 2;
+			}
+			.slide .img3{
+				width: 80%;
+				height: 80%;
+				top: 10%;
+				left: 10%;
+				z-index: 3;
+			}
+			.slide .img4{
+				width: 60%;
+				height: 60%;
+				top: 20%;
+				left: 60%;
+				z-index: 2;
+			}
+			.slide .img5{
+				width: 40%;
+				height: 40%;
+				top: 30%;
+				left: 110%;
+				z-index: 1;
+			}
+			.slide-bt{
+				position: absolute;
+				left: 50%;
+				bottom: 13%;
+				z-index: 10;
+			}
+			.slide-bt span{
+				width: 24px;
+				height: 8px;
+				background: #c9caca;
+				float: left;
+				margin: 5px;
+				border-radius: 4px;
+			}
+			.slide .slide-bt .on{
+				background: #ffd200;
+			}
+			button{
+				width: 50px;
+				margin: 20px;
+			}
+		</style>
+	</head>
+	<body>
+	<!-- start header -->
+		<header>
+			<div class="top center">
+				<div class="left fl">
+
+				</div>
+				<div class="right fr">
+					<div class="gouwuche fr"><a href="gouwuche.html">购物车</a></div>
+					<div class="fr" id="div_fr">
+						<ul>
+							<li><a href="login.html" target="_blank">登录</a></li>
+							<li>|</li>
+							<li><a href="register.html" target="_blank">注册</a></li>
+							<!--<li>|</li>-->
+							<!--<li><a href="">消息通知</a></li>-->
+						</ul>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</header>
+	<!--end header -->
+
+<!-- start banner_x -->
+		<div class="banner_x center" >
+			<div class="nav fl">
+				<ul>
+					<li><a href="/liebiao.html?typeid=1">五金</a></li>
+					<li><a href="/liebiao.html?typeid=2">木板</a></li>
+					<li><a href="/liebiao.html?typeid=3">防水材料</a></li>
+					<li><a href="/liebiao.html?typeid=4">油漆</a></li>
+					<li><a href="/liebiao.html?typeid=5">水泥</a></li>
+					<li><a href="/liebiao.html?typeid=6">钢筋</a></li>
+					<li><a href="/liebiao.html?typeid=7">粉刷材料</a></li>
+				</ul>
+			</div>
+			<div class="search fr">
+				<form>
+					<div class="text fl">
+						<input type="text" class="shuru" id="queryname" placeholder="输入你想购买的上屏">
+					</div>
+					<div class="submit fl">
+						<input type="submit"  id="query" onclick="return false" class="sousuo" value="搜索"/>
+					</div>
+					<div class="clear"></div>
+				</form>
+				<div class="clear"></div>
+			</div>
+		</div>
+<!-- end banner_x -->
+	<div class="container">
+		<div id="slide" class="slide" class="index-slide" alt="star">
+			<!-- 轮播图片数量可自行增减 -->
+			<div class="img"><a href="http://www.baidu.com"><img src="image/image/1.png"/></a></div>
+			<div class="img"><img src="image/image/2.png"/></div>
+			<div class="img"><a href="/xiangqing.html?id=8"><img src="image/image/3.png"/></a></div>
+			<div class="img"><img src="image/image/4.png"/></div>
+			<div class="img"><img src="image/image/5.png"/></div>
+
+			<div class="slide-bt"></div>
+		</div>
+	</div>
+	<!-- start danpin -->
+		<div class="danpin center">
+			
+			<div class="biaoti center">超新星产品</div>
+			<div class="main center" id="div_main_center">
+
+				<div class="clear"></div>
+			</div>
+		</div>
+	</body>
+<script src="js/jquery-3.3.1.min.js"></script>
+	<script src="js/jquery-1.8.3.min.js"></script>
+	<script src="css/luobotu/luobo.js"></script>
+<script>
+	var index={};
+	$(function(){
+		index.getUser();
+		index.zuixin();
+	})
+
+	/**
+	 *
+	 *这个是用来加载最新上加的物品
+	 */
+	index.zuixin=function(){
+		$.ajax({
+			url:"goods/getGood",
+			type:"post",
+			success:function(res){
+				console.log(res);
+				if(res.successCode==100){
+					var goods=res.mapObject.goods;
+					for (var i=0;i<goods.length;i++){
+						// <div class="mingxing fl" id="div123"
+						var div=$("<div></div>").addClass("mingxing fl");
+						var div1=$("<div></div>").addClass("sub_mingxing");
+						var a=$("<a href='xiangqing.html?goodsid="+goods[i].id+"'></a>");
+						var img=$("<img src="+goods[i].image+" />");
+						div1.append(a);
+						a.append(img);
+						var div2=$("<div></div>").addClass("pinpai");
+						div2.append("商品名称："+goods[i].goodname);
+						var div3=$("<div></div>").addClass("youhui");
+						div3.append("商品库存量："+goods[i].stock);
+						var div4=$("<div></div>").addClass("jiage");
+						div4.append("商品价格：￥"+goods[i].price+"元");
+						div.append(div1,div2,div3,div4);
+						$("#div_main_center").append(div);
+					}
+				}
+			}
+		})
+	}
+
+	/**
+	 * 这个是用来判断是否有登录
+	 */
+	index.getUser=function(){
+		$.ajax({
+			url:"consumer/getSession",
+			type:"post",
+			success:function(res){
+				if(res.successCode==100){
+					// alert("恭喜你登录成功");
+				$("#div_fr >ul").attr("hidden","hidden");
+                    var span=$("<span></span>").append("<a href=\"self_info.html\" style='color:white'>个人中心</a>");
+				$("#div_fr").append(span);
+				}
+			}
+		})
+	}
+	$("#query").click(function () {
+		window.location.href="liebiao.html?name="+$("#queryname").val();
+	})
+
+	// //$.ajax({
+	// url:"",
+	// 		data:{
+	//
+	// },
+	// type:"post",
+	// 		success:function (res) {
+	//
+	// }
+	// })
+</script>
+</html>

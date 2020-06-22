@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单详情页面</title>
+    <link href="/css/indexVue/css/index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div id="app">
+    <el-form :inline="true" class="demo-form-inline">
+        <el-form-item>
+            <el-input v-model="searchName" placeholder="订单编号"></el-input>
+        </el-form-item>
+        <!--<el-form-item>-->
+            <!--<el-input v-model="searchStatus" placeholder="状态"></el-input>-->
+        <!--</el-form-item>-->
+        <el-form-item label="状态">
+            <el-select v-model="searchStatus" placeholder="状态">
+                <el-option label="未支付"  value="0"></el-option>
+                <el-option label="已支付"  value="1"></el-option>
+                <el-option label="取消订单" value="2"></el-option>
+                <el-option label="已发货" value="3"></el-option>
+                <el-option label="已签收" value="4"></el-option>
+            </el-select>
+        </el-form-item>
+
+        <el-form-item label="选择时间">
+            <el-col :span="11">
+                <el-date-picker type="date" placeholder="选择日期" v-model="searchStartTime" style="width: 100%;"></el-date-picker>
+            </el-col>
+            <el-col class="line" :span="2">-</el-col>
+            <el-col :span="11">
+                <el-date-picker type="date" placeholder="选择日期" v-model="searchEndTime" style="width: 100%;"></el-date-picker>
+            </el-col>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="query">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="clear">清除</el-button>
+        </el-form-item>
+    </el-form>
+
+
+    <!--对话框-->
+    <el-dialog
+            title="提示"
+            :visible.sync="dialogVisible"
+            width="80%"
+            :before-close="handleClose">
+        <template>
+            <el-table
+                    :data="ordersl"
+                    style="width: 100%">
+                <el-table-column
+                        prop="goods[0].id"
+                        label="商品id">
+                </el-table-column>
+                <el-table-column label="商品图片"
+                                 width="150">
+                    <template slot-scope="scope">
+                        <el-image :src="scope.row.goods[0].image"></el-image>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="goods[0].goodname"
+                        label="商品名称">
+                </el-table-column>
+
+                <el-table-column
+                        prop="goods[0].price"
+                        label="商品价格">
+                </el-table-column>
+                <el-table-column
+                        prop="count"
+                        label="商品数量"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="subtotal"
+                        label="总价格">
+                </el-table-column>
+
+
+
+            </el-table>
+        </template>
+
+    </el-dialog>
+
+
+    <!--表单-->
+    <template>
+        <el-table
+                :data="orders"
+                style="width: 100%">
+            <el-table-column
+                    prop="oid"
+                    label="订单编号"
+                    width="300"
+            >
+            </el-table-column>
+            <el-table-column
+                    prop="ordertime"
+                    label="创建时间">
+            </el-table-column>
+            <el-table-column
+                    label="状态">
+                <template slot-scope="scope">
+                      <span v-if="scope.row.state=='0'">
+                        未支付
+                    </span>
+                    <span v-else-if="scope.row.state=='1'">
+                        支付
+                    </span>
+                    <span v-else-if="scope.row.state=='2'">
+                        删除
+                    </span>
+                    <span v-else-if="scope.row.state=='3'">
+                        发货
+                    </span>
+                    <span v-else-if="scope.row.state=='4'">
+                        已验收
+                    </span>
+                </template>
+            </el-table-column>
+
+            <el-table-column
+                    prop="uname"
+                    label="购买用户">
+            </el-table-column>
+            <el-table-column
+                    prop="total"
+                    label="总价格"
+            >
+            </el-table-column>
+            <el-table-column
+                    prop="address"
+                    label="收货地址"
+                    width="300"
+            >
+            </el-table-column>
+
+
+            <el-table-column label="操作"
+                             width="300">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            type="info"
+                            @click="handleEdit(scope.$index, scope.row)">订单详情</el-button>
+                    <el-button
+                            v-if="scope.row.state=='1'"
+                            size="mini"
+                            type="success"
+                            @click="fire(scope.row)"
+                           >审核发货</el-button>
+                    <el-button
+                            v-if="scope.row.state!='1'"
+                            size="mini"
+                            type="success"
+                            disabled>审核发货</el-button>
+
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="pageNumber"
+                :page-sizes="pagesizes"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total">
+        </el-pagination>
+    </template>
+
+</div>
+</body>
+<script src="/js/vue.js"></script>
+<script src="/js/axios.min.js"></script>
+<script src="/js/index.js"></script>
+<script src="../order/orders.js"></script>
+</html>

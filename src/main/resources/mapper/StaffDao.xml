@@ -1,0 +1,50 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hs.dao.StaffDao">
+    <select id="login" resultType="java.util.HashMap">
+        select * from staff s join role r on s.roleid=r.id where s.staffid=#{staffId} and  s.password=#{password}
+    </select>
+
+    <select id="getAll" resultType="com.hs.entity.Staff">
+        select s.*,r.rolename from staff s join role r on s.roleid=r.id
+        <where>
+            <if test="searchStartTime!=null">
+              s.createdtime> #{searchStartTime}
+            </if>
+            <if test="searchEndTime!=''">
+                and #{searchEndTime}>s.createdtime
+            </if>
+            <if test="searchName!=''">
+                and s.staffname like "%${searchName}%"
+            </if>
+            <if test="searchStatus!=-1">
+                and s.status=#{searchStatus}
+            </if>
+
+        </where>
+        order by id desc
+    </select>
+
+    <select id="getStaffId" resultType="java.lang.Integer">
+        select staffId from staff order by id desc limit 1
+    </select>
+
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(*) from staff
+    </select>
+
+    <select id="getRole" resultType="com.hs.entity.Role">
+        select * from role where rolename!='管理员' and status=1
+    </select>
+
+    <insert id="save">
+        insert into staff (staffid,staffname,password,phone,idcard,address,createdtime,status,roleid) values(#{staffid},#{staffname},#{password},#{phone},#{idcard},#{address},#{createdtime},#{status},#{roleid})
+    </insert>
+
+    <update id="update">
+            update staff set staffname=#{staffname},phone=#{phone},idcard=#{idcard},address=#{address},createdtime=#{createdtime},status=#{status},roleid=#{roleid} where staffid=#{staffid}
+    </update>
+    <update id="del">
+        update staff set status=#{status} where id=#{id}
+    </update>
+</mapper>
